@@ -102,3 +102,20 @@ update_user           PUT      /user/<int:uid>
 # If you find me
 
 please give me a star ⭐ 
+
+
+
+# Real 项目readme.md 在这
+
+## 如你所见，这个项目是由上面的readme改编而来的，算是二次开发
+
+mainChange:
+
+    1 数据库 修改为mysql
+    2 项目内容变为 数据集的增删改查 并且包含用户登录  用户与数据集相关联
+    3 此项目后端部分虽然说是demo版本，但并不是
+    4 此项目为 数据集工作站（真正的前端提供后端服务）
+    5 后期会发布docker版本的数据集工作站（前后端分离）
+
+上面的文档写的挺好的，夸一下~
+
