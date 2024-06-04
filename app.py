@@ -1,3 +1,4 @@
+from datetime import datetime
 from flask import Flask, jsonify, render_template, request
 from flask_migrate import Migrate
 from flask_cors import CORS
@@ -20,20 +21,87 @@ migrate = Migrate(app, db)
 @app.route('/')
 def hello():
     return '你好啊，木子！这是测数据集接口的服务'
-# 添加数据集
+
+@app.post("/register")
+def register_by_uuid():
+    data = request.get_json()
+    uuid = data.get("uuid")
+    user = UserModel.query.filter_by(uuid=uuid).first()
+    if user:
+        return jsonify(msg="错误,用户已注册请登录")
+    else:
+        new_user = UserModel(
+            uuid=uuid,
+            join_time=datetime.now()
+        )
+        
+        db.session.add(new_user)
+        db.session.commit()
+        return jsonify(msg ="注册成功！已连接到数据库")
+
+@app.get("/rkwork/register")         # 走后门的接口
+def register_by_rkwork():
+    username = request.args.get('username')
+    password = request.args.get('password')
+    user = UserModel.query.filter_by(username=username).first()
+    if user:
+        return jsonify(msg="错误,用户已注册请登录")
+    else:
+        new_user = UserModel(
+            username = username,
+            password = password,
+            uuid=username,
+            join_time=datetime.now()
+        )
+        
+        db.session.add(new_user)
+        db.session.commit()
+        return jsonify(msg ="注册成功！已连接到数据库")
+
+    
+
+
+# 添加单条数据集
 @app.post("/dataset")    
 def add_dataset():
     data = request.get_json()
     # 拿
     instruction = data.get("instruction")  
     output = data.get("output")  
+    uuid = data.get('uuid')
+    user = UserModel.query.filter_by(uuid=uuid).first()
+    if user:                           # 我需要返回该条数据集的id号  待解决
+        dataset = DatasetsModel(instruction=data.get("instruction"), output=data.get("output"), user_id=user.id)
+        db.session.add(dataset)
+        db.session.commit()
+        return jsonify(msg="用户单条数据添加成功", dataset=dataset.get_dataset())
+    else:
+        # 存
+        dataset = DatasetsModel(instruction=data.get("instruction"), output=data.get("output"))
+        db.session.add(dataset)
+        db.session.commit()
+        # 显示
+        print(dataset)
+        return jsonify(msg="添加单条数据", dataset=data.get("dataset"),output=data.get("output"))
+
+# 添加多条数据集 要和用户关联
+@app.post("/datasets")    
+def add_datasets():
+    data = request.get_json()
+    # 拿
+    datasets = data.get("datasets")  #[[],[],[]]
+    for i in datasets:
+        instruction = i[1]
+        output = i[2]       
     # 存
-    dataset = DatasetsModel(instruction=data.get("instruction"), output=data.get("output"))
-    db.session.add(dataset)
-    db.session.commit()
-    # 显示
+        dataset = DatasetsModel(instruction=instruction, output=output)
+        db.session.add(dataset)
+        db.session.commit()
+
+        # 显示
     print(dataset)
     return jsonify(msg="ok", dataset=data.get("dataset"),output=data.get("output"))
+
 
 @app.get("/dataset")     
 def get_dataset_all():
@@ -56,6 +124,23 @@ def get_dataset_by_id(id):
             print(data)
             return jsonify(data)  
     except:
+        # 如果没有找到用户，返回一个错误消息  
+        return jsonify(msg = f'{id}数据集不存在！！！')
+    
+
+@app.route('/dataset/<string:uuid>', methods=['GET'])  
+def get_dataset_by_uuid(uuid):  
+    print(uuid)
+    user = UserModel.query.filter_by(uuid=uuid).first()
+    if user:  
+        datasets = user.datasets       # 序列化之后变得无序，所以还是在前端组织顺序？
+        print(datasets)
+        allDataset = []
+        for dataset in datasets :
+            allDataset.append([dataset.id, dataset.get_dataset()])
+        return jsonify(msg='用户数据查询成功', allDataset=allDataset)     # 这个返回的是字符串我希望是数组
+            # pass  
+    else:
         # 如果没有找到用户，返回一个错误消息  
         return jsonify(msg = f'{id}数据集不存在！！！')
     

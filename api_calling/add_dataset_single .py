@@ -3,9 +3,11 @@
 import requests  
 import json  
   
-url = 'http://localhost:5000/register'  # 替换为你的服务器地址和端口  
+url = 'http://localhost:5000/dataset'  # 替换为你的服务器地址和端口  
 data = {  
-    'uuid':'rkkk'
+    'instruction':'你好',  
+    'output': '哈哈哈哈哈哈sd这样？sadasasdasd',
+    'uuid': 'rkwork'
 }  
 headers = {'Content-Type': 'application/json'}  
   

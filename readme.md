@@ -119,3 +119,21 @@ mainChange:
 
 上面的文档写的挺好的，夸一下~
 
+
+新增接口： 
+
+    1 后门登录：http://127.0.0.1:5000:rkwork/register
+
+    2 uuid注册  /register
+
+修改接口：
+
+    1 添加数据集接口/dataaset: 增加对post json参数 uuid的 解析 和判断：有 uuid 则 数据集添加列中包含用户信息
+
+    2 查询接口 /dataset/<string:uuid>: 增加对get 参数uuid的解析 和 数据返回处理： 有 uuid 则 返回 该uuid用户制作的所有数据集 {'allDataset':[[100, {'input': '', 'instruction': '你好', 'output': '哈哈哈哈哈哈sd这样？sadasasdasd'}],[],,,],'msg':'***'}
+
+
+
+
+
+
