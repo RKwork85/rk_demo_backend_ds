@@ -1,6 +1,6 @@
 import requests 
 
-with requests.get('http://127.0.0.1:5000/user/561') as res:
+with requests.get('http://127.0.0.1:5000/dataset/10') as res:
     print(res.json())
 
 
