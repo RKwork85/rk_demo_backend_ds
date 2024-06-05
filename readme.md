@@ -133,6 +133,13 @@ mainChange:
     2 查询接口 /dataset/<string:uuid>: 增加对get 参数uuid的解析 和 数据返回处理： 有 uuid 则 返回 该uuid用户制作的所有数据集 {'allDataset':[[100, {'input': '', 'instruction': '你好', 'output': '哈哈哈哈哈哈sd这样？sadasasdasd'}],[],,,],'msg':'***'}
 
 
+---
+bugs
+
+1 前后端分离产生的跨域请求问题，后端服务器无法写session到前端服务中去，需要配置前端的允许携带cookie发送请求，一个跨域写session的问题，困我这么久  √
+
+[blog: 感谢这篇博客](https://blog.csdn.net/weixin_64094522/article/details/134750496)
+
 
 
 
